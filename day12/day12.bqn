@@ -1,26 +1,46 @@
-lines ← •file.Lines "./day12.txt"
+lines ← •file.Lines "./day12ex.txt"
 map ← > {27 ⌊ | 48 - 𝕩×𝕩 ≥ 49}(-⟜'0') ¨ lines
 idx ← /○⥊⟜(↕≢) (27 = map)
 s ← 0 ⊑ idx
 e ← 1 ⊑ idx
-m ← 0˙⌾(s⊸⊑) map
+m ← 1˙⌾(s⊸⊑) map
 ⟨r,c⟩ ← ≢ m
 
-Cross ← { up ← 𝕩 - ⟨1,0⟩
-        ⋄ dn ← 𝕩 + ⟨1,0⟩
-        ⋄ le ← 𝕩 - ⟨0,1⟩
-        ⋄ ri ← 𝕩 + ⟨0,1⟩
-        ⋄ ⍷ (⟨(r-1),(c-1)⟩⊸⌊)¨(⟨0,0⟩⊸⌈)¨up‿dn‿le‿ri
+g ← m ≍ 0 ¨ m
+
+Cross ← { north ← 𝕩 - ⟨1,0⟩
+        ⋄ south ← 𝕩 + ⟨1,0⟩
+        ⋄ west ← 𝕩 - ⟨0,1⟩
+        ⋄ east ← 𝕩 + ⟨0,1⟩
+        ⋄ ⍷ (⟨(r-1),(c-1)⟩⊸⌊)¨(⟨0,0⟩⊸⌈)¨north‿south‿west‿east
         }
 
 Step ← { a ← 𝕩
        ⋄ x ← ⊑ 𝕩
-       ⋄ i ← x ⊑ m
+       ⋄ mp ← 0 ⊏ 𝕨
+       ⋄ gd ← 1 ⊏ 𝕨
+       ⋄ i ← x ⊑ mp
        ⋄ p ← Cross x
-       ⋄ d ← /⟜p˜{¬∨´𝕩⊸ ≡¨a}¨p
-       ⋄ n ← (⊑ ⟜ d) ˜ ⊑ / {((i-1)=𝕩)∨(i=𝕩)}¨d ⊑ m
-       ⋄ (¬s≡n) ? 𝕊 (⋈ n)∾ 𝕩 ; ⊑ ≢ 𝕩
+       ⋄ f ← /⟜p˜{¬∨´𝕩⊸ ≡¨a}¨p
+       ⋄ l ← f /˜{((i+1)=𝕩)∨(i=𝕩)}¨f ⊑ m
+       ⋄ ng ← (i˙⌾(s⊸⊑)) gd{(i+1)˙⌾(𝕨⊸⊑) 𝕩}´l
+       ⋄ nm ← mp ≍ ng
+       ⋄ (0 ≥ ≠ l /˜ e⊸≡¨l) ? (𝕊  )∾ 𝕩 ; ⊑ ≢ 𝕩
        }
+
+p ← Cross s
+a ← (⋈s)
+v ← 0
+foo ← ⟨⟨0,1⟩,⟨3,2⟩,⟨1,2⟩,⟨2,5⟩⟩
+0 ≥ ≠ foo /˜ e⊸≡¨foo
+
+f ← /⟜p{¬∨´𝕩⊸ ≡¨a}¨p
+i ← s ⊑ m
+l ← f /˜{((i+1)=𝕩)∨(i=𝕩)}¨f ⊑ m
+
+ng ← (i˙⌾(s⊸⊑)) (1⊏g){(i+1)˙⌾(𝕨⊸⊑) 𝕩}´l
+
+((1 ⊏ g)⊸{𝕨 + (v+1)˙⌾(𝕩⊸⊑) 𝕨})´l
 
 p ← Step ⋈ e 
 
